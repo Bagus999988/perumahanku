@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PerumahanKu — Temukan Rumah Impian Anda</title>
+    <meta name="description" content="PerumahanKu adalah platform pencarian properti terpercaya di Indonesia. Temukan rumah, apartemen, ruko, dan tanah impian Anda." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="perumahanku.css" />
+  </head>
+  <body>
+    <header class="header" id="siteHeader">
+      <nav class="navbar container">
+        <a href="perumahanku.html" class="logo">Perumahan<span>Ku</span></a>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Buka menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#home">Beranda</a></li>
+          <li><a href="#listings">Properti</a></li>
+          <li><a href="#why-us">Keunggulan</a></li>
+          <li><a href="#contact">Kontak</a></li>
+        </ul>
+
+        <div class="nav-auth" id="navAuth">
+          <a href="login.html" class="btn btn-ghost">Masuk</a>
+          <a href="register.html" class="btn btn-primary">Daftar</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+          <p class="hero-eyebrow">Platform Properti #1 di Indonesia</p>
+          <h1>Temukan <span>Rumah Impian</span><br />Anda Hari Ini</h1>
+          <p class="hero-sub">
+            PerumahanKu membantu Anda menemukan rumah, apartemen, ruko, dan tanah
+            terbaik di seluruh Indonesia dengan mudah dan cepat.
+          </p>
+        </div>
+
+        <form class="search-card container" id="searchForm">
+          <div class="search-field">
+            <label for="searchInput">Kata Kunci</label>
+            <input type="text" id="searchInput" placeholder="Nama properti atau lokasi..." />
+          </div>
+
+          <div class="search-field">
+            <label for="typeSelect">Tipe Properti</label>
+            <select id="typeSelect">
+              <option value="all">Semua Tipe</option>
+              <option value="Rumah">Rumah</option>
+              <option value="Apartemen">Apartemen</option>
+              <option value="Ruko">Ruko</option>
+              <option value="Tanah">Tanah</option>
+            </select>
+          </div>
+
+          <div class="search-field">
+            <label for="priceSelect">Rentang Harga</label>
+            <select id="priceSelect">
+              <option value="all">Semua Harga</option>
+              <option value="0-500000000">Di bawah Rp500 Jt</option>
+              <option value="500000000-1000000000">Rp500 Jt - Rp1 M</option>
+              <option value="1000000000-2500000000">Rp1 M - Rp2,5 M</option>
+              <option value="2500000000-999999999999">Di atas Rp2,5 M</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary search-btn">
+            Cari Properti
+          </button>
+        </form>
+
+        <div class="stats container">
+          <div class="stat">
+            <strong id="statListings">0</strong>
+            <span>Properti Tersedia</span>
+          </div>
+          <div class="stat">
+            <strong>50+</strong>
+            <span>Kota di Indonesia</span>
+          </div>
+          <div class="stat">
+            <strong>1.200+</strong>
+            <span>Klien Puas</span>
+          </div>
+          <div class="stat">
+            <strong>24/7</strong>
+            <span>Layanan Dukungan</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- LISTINGS -->
+      <section class="listings container" id="listings">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Properti Pilihan</p>
+            <h2>Rekomendasi Untuk Anda</h2>
+          </div>
+
+          <div class="toolbar">
+            <label class="sort-label" for="sortSelect">Urutkan:</label>
+            <select id="sortSelect">
+              <option value="newest">Terbaru</option>
+              <option value="price-asc">Harga Terendah</option>
+              <option value="price-desc">Harga Tertinggi</option>
+              <option value="area-desc">Luas Terbesar</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="results-count" id="resultsCount"></p>
+
+        <div class="listings-grid" id="listingsGrid">
+          <!-- Property cards are rendered here by perumahanku.js -->
+        </div>
+
+        <p class="no-results" id="noResults" hidden>
+          Tidak ada properti yang cocok dengan pencarian Anda. Coba ubah kata kunci
+          atau filter.
+        </p>
+      </section>
+
+      <!-- WHY US -->
+      <section class="why-us" id="why-us">
+        <div class="container">
+          <div class="section-heading center">
+            <p class="eyebrow">Kenapa Memilih Kami</p>
+            <h2>Keunggulan PerumahanKu</h2>
+          </div>
+
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🏡</div>
+              <h3>Properti Terverifikasi</h3>
+              <p>Setiap listing melalui proses verifikasi untuk memastikan keakuratan informasi.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">💬</div>
+              <h3>Konsultasi Gratis</h3>
+              <p>Tim ahli kami siap membantu Anda menemukan properti terbaik tanpa biaya.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🔒</div>
+              <h3>Transaksi Aman</h3>
+              <p>Proses jual beli didampingi hingga selesai dengan sistem yang transparan.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⚡</div>
+              <h3>Proses Cepat</h3>
+              <p>Cari, bandingkan, dan hubungi penjual hanya dalam hitungan menit.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta">
+        <div class="container cta-inner">
+          <div>
+            <h2>Punya Properti untuk Dijual atau Disewa?</h2>
+            <p>Pasang iklan properti Anda dan jangkau ribuan calon pembeli setiap hari.</p>
+          </div>
+          <a href="register.html" class="btn btn-secondary">Pasang Properti</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" id="contact">
+      <div class="container footer-grid">
+        <div class="footer-col">
+          <a href="perumahanku.html" class="logo">Perumahan<span>Ku</span></a>
+          <p>
+            Platform pencarian properti terpercaya untuk menemukan rumah,
+            apartemen, ruko, dan tanah impian Anda di seluruh Indonesia.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Tautan Cepat</h4>
+          <ul>
+            <li><a href="#home">Beranda</a></li>
+            <li><a href="#listings">Properti</a></li>
+            <li><a href="#why-us">Keunggulan</a></li>
+            <li><a href="about.html">Tentang Kami</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Tipe Properti</h4>
+          <ul>
+            <li><a href="#listings" data-type="Rumah">Rumah</a></li>
+            <li><a href="#listings" data-type="Apartemen">Apartemen</a></li>
+            <li><a href="#listings" data-type="Ruko">Ruko</a></li>
+            <li><a href="#listings" data-type="Tanah">Tanah</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Hubungi Kami</h4>
+          <ul>
+            <li>📍 Jl. Sudirman No. 123, Jakarta</li>
+            <li>📞 (021) 555-0199</li>
+            <li>✉️ info@perumahanku.id</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 PerumahanKu. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="perumahanku.js"></script>
+  </body>
+</html>

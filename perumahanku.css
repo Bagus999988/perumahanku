@@ -586,6 +586,90 @@ h1, h2, h3, h4 {
   color: rgba(255, 255, 255, 0.8);
 }
 
+/* ---------- Simple form pages (register / login) ---------- */
+.form-section {
+  padding: 90px 0;
+  min-height: calc(100vh - 320px);
+  display: flex;
+  justify-content: center;
+}
+
+.form-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 40px;
+  max-width: 640px;
+  width: 100%;
+}
+
+.form-card-narrow {
+  max-width: 480px;
+  text-align: center;
+}
+
+.form-card h1 {
+  font-size: 1.7rem;
+  margin: 8px 0 12px;
+}
+
+.form-sub {
+  color: var(--color-text-light);
+  margin-bottom: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.form-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+.form-grid textarea {
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.form-grid textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-light);
+  box-shadow: 0 0 0 3px rgba(30, 84, 144, 0.15);
+}
+
+.form-grid .btn {
+  grid-column: 1 / -1;
+}
+
+.form-status {
+  grid-column: 1 / -1;
+  font-size: 0.9rem;
+  min-height: 1.2em;
+}
+
+.form-status-success {
+  color: #1a7f4e;
+}
+
+.form-status-error {
+  color: #c0392b;
+}
+
+@media (max-width: 600px) {
+  .form-card {
+    padding: 28px 20px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ---------- Footer ---------- */
 .footer {
   background: #081b32;

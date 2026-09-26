@@ -1,130 +1,16 @@
 // ==========================================================================
 // PerumahanKu — Real Estate Website Logic
+// Listings are loaded live from Supabase (see supabase/schema.sql);
+// admin edits made in /admin appear here automatically.
 // ==========================================================================
 
 (function () {
   "use strict";
 
-  /* ---------------- Sample property data ---------------- */
-  const properties = [
-    {
-      id: 1,
-      title: "Rumah Minimalis Green Valley",
-      location: "Bandung, Jawa Barat",
-      type: "Rumah",
-      status: "sale",
-      price: 850000000,
-      beds: 3,
-      baths: 2,
-      area: 90,
-      image: "https://picsum.photos/seed/perumahanku1/600/450",
-      createdAt: "2026-08-20",
-    },
-    {
-      id: 2,
-      title: "Apartemen Skyline Residence",
-      location: "Jakarta Selatan, DKI Jakarta",
-      type: "Apartemen",
-      status: "rent",
-      price: 6500000,
-      beds: 2,
-      baths: 1,
-      area: 45,
-      image: "https://picsum.photos/seed/perumahanku2/600/450",
-      createdAt: "2026-09-10",
-    },
-    {
-      id: 3,
-      title: "Ruko Strategis Jalan Utama",
-      location: "Surabaya, Jawa Timur",
-      type: "Ruko",
-      status: "sale",
-      price: 1750000000,
-      beds: 0,
-      baths: 2,
-      area: 120,
-      image: "https://picsum.photos/seed/perumahanku3/600/450",
-      createdAt: "2026-07-02",
-    },
-    {
-      id: 4,
-      title: "Tanah Kavling Siap Bangun",
-      location: "Bogor, Jawa Barat",
-      type: "Tanah",
-      status: "sale",
-      price: 450000000,
-      beds: 0,
-      baths: 0,
-      area: 200,
-      image: "https://picsum.photos/seed/perumahanku4/600/450",
-      createdAt: "2026-06-15",
-    },
-    {
-      id: 5,
-      title: "Rumah Modern Cluster Harmoni",
-      location: "Tangerang, Banten",
-      type: "Rumah",
-      status: "sale",
-      price: 1250000000,
-      beds: 4,
-      baths: 3,
-      area: 150,
-      image: "https://picsum.photos/seed/perumahanku5/600/450",
-      createdAt: "2026-09-18",
-    },
-    {
-      id: 6,
-      title: "Apartemen Studio Central Park",
-      location: "Jakarta Barat, DKI Jakarta",
-      type: "Apartemen",
-      status: "sale",
-      price: 620000000,
-      beds: 1,
-      baths: 1,
-      area: 32,
-      image: "https://picsum.photos/seed/perumahanku6/600/450",
-      createdAt: "2026-05-28",
-    },
-    {
-      id: 7,
-      title: "Rumah Asri Dekat Sekolah",
-      location: "Yogyakarta, DI Yogyakarta",
-      type: "Rumah",
-      status: "rent",
-      price: 4200000,
-      beds: 2,
-      baths: 1,
-      area: 70,
-      image: "https://picsum.photos/seed/perumahanku7/600/450",
-      createdAt: "2026-08-02",
-    },
-    {
-      id: 8,
-      title: "Ruko 3 Lantai Kawasan Bisnis",
-      location: "Medan, Sumatera Utara",
-      type: "Ruko",
-      status: "rent",
-      price: 15000000,
-      beds: 0,
-      baths: 2,
-      area: 180,
-      image: "https://picsum.photos/seed/perumahanku8/600/450",
-      createdAt: "2026-04-11",
-    },
-    {
-      id: 9,
-      title: "Tanah Komersial Pinggir Jalan Raya",
-      location: "Semarang, Jawa Tengah",
-      type: "Tanah",
-      status: "sale",
-      price: 980000000,
-      beds: 0,
-      baths: 0,
-      area: 300,
-      image: "https://picsum.photos/seed/perumahanku9/600/450",
-      createdAt: "2026-09-01",
-    },
-  ];
+  const sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+  const FALLBACK_IMAGE_SEED = "https://picsum.photos/seed/";
+
+  let properties = [];
 
   /* ---------------- DOM references ---------------- */
   const grid = document.getElementById("listingsGrid");
@@ -138,16 +24,56 @@
   const priceSelect = document.getElementById("priceSelect");
   const sortSelect = document.getElementById("sortSelect");
 
-  const header = document.getElementById("siteHeader");
-  const navToggle = document.getElementById("navToggle");
-  const navLinks = document.getElementById("navLinks");
-  const navAuth = document.getElementById("navAuth");
-
   const currencyFormatter = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
     maximumFractionDigits: 0,
   });
+
+  /* ---------------- Data loading ---------------- */
+  async function loadListings() {
+    const { data, error } = await sb
+      .from("listings")
+      .select(
+        "id, title, location, type, status, price, beds, baths, area, created_at, listing_photos(photo_url, sort_order)"
+      )
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Gagal memuat listing dari Supabase:", error.message);
+      return [];
+    }
+
+    return (data || []).map((row) => {
+      const photos = [...(row.listing_photos || [])].sort((a, b) => a.sort_order - b.sort_order);
+      return {
+        id: row.id,
+        title: row.title,
+        location: row.location,
+        type: row.type,
+        status: row.status,
+        price: Number(row.price),
+        beds: row.beds,
+        baths: row.baths,
+        area: Number(row.area),
+        image: photos[0] ? photos[0].photo_url : `${FALLBACK_IMAGE_SEED}${row.id}/600/450`,
+        createdAt: row.created_at,
+      };
+    });
+  }
+
+  async function logVisit() {
+    try {
+      await sb.from("visitors").insert({
+        page: window.location.pathname || "/",
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent,
+      });
+    } catch (err) {
+      // Visitor logging is best-effort; never block the page for it.
+      console.warn("Gagal mencatat kunjungan:", err);
+    }
+  }
 
   /* ---------------- Rendering ---------------- */
   function formatPrice(property) {
@@ -267,31 +193,13 @@
     });
   });
 
-  // Mobile nav toggle
-  navToggle.addEventListener("click", () => {
-    const isOpen = navLinks.classList.toggle("open");
-    navAuth.classList.toggle("open", isOpen);
-    navToggle.setAttribute("aria-expanded", String(isOpen));
-  });
-
-  navLinks.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      navLinks.classList.remove("open");
-      navAuth.classList.remove("open");
-      navToggle.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  // Sticky header shadow on scroll
-  function handleScroll() {
-    header.classList.toggle("scrolled", window.scrollY > 20);
-  }
-  window.addEventListener("scroll", handleScroll, { passive: true });
-
   /* ---------------- Init ---------------- */
-  function init() {
+  async function init() {
+    logVisit();
+
+    resultsCount.textContent = "Memuat properti...";
+    properties = await loadListings();
     statListings.textContent = properties.length;
-    handleScroll();
     renderListings(sortListings(properties, "newest"));
   }
 

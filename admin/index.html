@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Kelola Listing — Admin PerumahanKu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../perumahanku.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <span class="logo">Perumahan<span>Ku</span></span>
+        <nav class="admin-nav">
+          <a href="index.html">🏠 Kelola Listing</a>
+          <a href="registrations.html">📝 Pendaftar</a>
+          <a href="visitors.html">👣 Pengunjung</a>
+        </nav>
+        <div class="admin-user" id="adminUserLabel"></div>
+        <button class="btn admin-logout" id="logoutBtn">Keluar</button>
+      </aside>
+
+      <main class="admin-main">
+        <div class="admin-topbar">
+          <h1>Kelola Listing &amp; Foto</h1>
+          <p>Pilih listing untuk menambah atau mengganti fotonya (maksimal 4 foto).</p>
+        </div>
+
+        <div class="admin-columns">
+          <div class="admin-listing-list" id="listingList">
+            <p class="admin-loading">Memuat listing...</p>
+          </div>
+          <div class="admin-photo-panel" id="photoPanel">
+            <p class="admin-empty-hint">Pilih listing di sebelah kiri untuk mengelola fotonya.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../supabase-config.js"></script>
+    <script src="admin-common.js"></script>
+    <script src="listings.js"></script>
+  </body>
+</html>

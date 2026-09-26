@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daftar — PerumahanKu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="perumahanku.css" />
+  </head>
+  <body>
+    <header class="header scrolled" id="siteHeader">
+      <nav class="navbar container">
+        <a href="perumahanku.html" class="logo">Perumahan<span>Ku</span></a>
+        <button class="nav-toggle" id="navToggle" aria-label="Buka menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="perumahanku.html#home">Beranda</a></li>
+          <li><a href="perumahanku.html#listings">Properti</a></li>
+          <li><a href="perumahanku.html#why-us">Keunggulan</a></li>
+          <li><a href="perumahanku.html#contact">Kontak</a></li>
+        </ul>
+        <div class="nav-auth" id="navAuth">
+          <a href="login.html" class="btn btn-ghost">Masuk</a>
+          <a href="register.html" class="btn btn-primary">Daftar</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="form-section container">
+        <div class="form-card">
+          <p class="eyebrow">Daftar Minat</p>
+          <h1>Daftarkan Diri Anda</h1>
+          <p class="form-sub">
+            Isi formulir di bawah ini dan tim kami akan menghubungi Anda untuk
+            membantu menemukan properti yang sesuai kebutuhan Anda.
+          </p>
+
+          <form id="registerForm" class="form-grid">
+            <div class="search-field">
+              <label for="nameInput">Nama Lengkap</label>
+              <input type="text" id="nameInput" required placeholder="Nama Anda" />
+            </div>
+
+            <div class="search-field">
+              <label for="emailInput">Email</label>
+              <input type="email" id="emailInput" required placeholder="nama@email.com" />
+            </div>
+
+            <div class="search-field">
+              <label for="phoneInput">Nomor Telepon</label>
+              <input type="tel" id="phoneInput" placeholder="08xxxxxxxxxx" />
+            </div>
+
+            <div class="search-field full-width">
+              <label for="messageInput">Pesan (opsional)</label>
+              <textarea id="messageInput" rows="4" placeholder="Ceritakan properti seperti apa yang Anda cari..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn">Kirim Pendaftaran</button>
+
+            <p class="form-status" id="formStatus" role="status"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-bottom">
+        <p>&copy; 2026 PerumahanKu. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="nav.js"></script>
+    <script src="register.js"></script>
+  </body>
+</html>

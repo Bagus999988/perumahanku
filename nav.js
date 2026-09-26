@@ -33,4 +33,25 @@
 
   window.addEventListener("scroll", handleScroll, { passive: true });
   handleScroll();
+
+  // Reveal the "Admin" link only if this browser currently holds a signed-in
+  // admin session (checked against Supabase, not guessed from local state).
+  // Public visitors and logged-out owners never see it.
+  const adminNavItem = document.getElementById("adminNavItem");
+  if (adminNavItem && window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+    (async () => {
+      try {
+        const sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+        const {
+          data: { session },
+        } = await sb.auth.getSession();
+        if (!session) return;
+
+        const { data: isAdmin } = await sb.rpc("is_admin");
+        if (isAdmin) adminNavItem.style.display = "";
+      } catch (err) {
+        // Fail silently — the link just stays hidden.
+      }
+    })();
+  }
 })();

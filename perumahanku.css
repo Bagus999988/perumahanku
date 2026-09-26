@@ -166,6 +166,12 @@ h1, h2, h3, h4 {
   opacity: 1;
 }
 
+/* Only unhidden by nav.js after confirming a signed-in admin session
+   (checked via the is_admin() RPC) — public visitors never see this. */
+.admin-nav-item {
+  display: none;
+}
+
 .nav-auth {
   display: flex;
   align-items: center;

@@ -52,6 +52,27 @@ create table if not exists public.visitors (
   visited_at timestamptz not null default now()
 );
 
+-- Property owners submit here via "Pasang Properti"; nothing shows on the
+-- public site until an admin approves it (see review_status below).
+create table if not exists public.listing_submissions (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  location text not null,
+  type text not null check (type in ('Rumah', 'Apartemen', 'Ruko', 'Tanah')),
+  status text not null check (status in ('sale', 'rent')),
+  price numeric not null,
+  beds int not null default 0,
+  baths int not null default 0,
+  area numeric not null,
+  notes text,
+  submitter_name text not null,
+  submitter_email text not null,
+  submitter_phone text,
+  review_status text not null default 'pending' check (review_status in ('pending', 'approved', 'rejected')),
+  created_at timestamptz not null default now(),
+  reviewed_at timestamptz
+);
+
 -- Owner allow-list: rows here are the only accounts allowed into /admin.
 create table if not exists public.admins (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -77,6 +98,7 @@ alter table public.listings enable row level security;
 alter table public.listing_photos enable row level security;
 alter table public.registrations enable row level security;
 alter table public.visitors enable row level security;
+alter table public.listing_submissions enable row level security;
 alter table public.admins enable row level security;
 
 -- listings: public can read, only admins can write
@@ -114,6 +136,23 @@ create policy "visitors_public_insert" on public.visitors
 drop policy if exists "visitors_admin_read" on public.visitors;
 create policy "visitors_admin_read" on public.visitors
   for select using (public.is_admin());
+
+-- listing_submissions: anyone can submit (insert), only admins can read/moderate
+drop policy if exists "listing_submissions_public_insert" on public.listing_submissions;
+create policy "listing_submissions_public_insert" on public.listing_submissions
+  for insert with check (true);
+
+drop policy if exists "listing_submissions_admin_read" on public.listing_submissions;
+create policy "listing_submissions_admin_read" on public.listing_submissions
+  for select using (public.is_admin());
+
+drop policy if exists "listing_submissions_admin_update" on public.listing_submissions;
+create policy "listing_submissions_admin_update" on public.listing_submissions
+  for update using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "listing_submissions_admin_delete" on public.listing_submissions;
+create policy "listing_submissions_admin_delete" on public.listing_submissions
+  for delete using (public.is_admin());
 
 -- admins table: only admins can see the allow-list (no public access at all)
 drop policy if exists "admins_self_read" on public.admins;

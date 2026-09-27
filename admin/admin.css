@@ -128,6 +128,42 @@ body {
   color: var(--color-text-light);
 }
 
+.admin-actions-cell {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.btn-sm {
+  padding: 7px 14px;
+  font-size: 0.82rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.status-badge.pending {
+  background: #fff3cd;
+  color: #916a00;
+}
+
+.status-badge.approved {
+  background: #d4edda;
+  color: #1a7f4e;
+}
+
+.status-badge.rejected {
+  background: #fdecea;
+  color: #c0392b;
+}
+
 /* ---------- Listings + photo manager ---------- */
 .admin-columns {
   display: grid;

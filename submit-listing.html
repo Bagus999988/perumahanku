@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pasang Properti — PerumahanKu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="perumahanku.css" />
+  </head>
+  <body>
+    <header class="header scrolled" id="siteHeader">
+      <nav class="navbar container">
+        <a href="index.html" class="logo">Perumahan<span>Ku</span></a>
+        <button class="nav-toggle" id="navToggle" aria-label="Buka menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html#home">Beranda</a></li>
+          <li><a href="index.html#listings">Properti</a></li>
+          <li><a href="index.html#why-us">Keunggulan</a></li>
+          <li><a href="index.html#contact">Kontak</a></li>
+          <li id="adminNavItem" class="admin-nav-item"><a href="admin/index.html">🔒 Admin</a></li>
+        </ul>
+        <div class="nav-auth" id="navAuth">
+          <a href="login.html" class="btn btn-ghost">Masuk</a>
+          <a href="register.html" class="btn btn-primary">Daftar</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="form-section container">
+        <div class="form-card">
+          <p class="eyebrow">Pasang Properti</p>
+          <h1>Ajukan Properti Anda</h1>
+          <p class="form-sub">
+            Isi detail properti Anda di bawah ini. Setiap pengajuan akan
+            <strong>ditinjau oleh admin</strong> terlebih dahulu sebelum tampil
+            di halaman depan — bukan langsung publik.
+          </p>
+
+          <form id="submitListingForm" class="form-grid">
+            <div class="search-field full-width">
+              <label for="titleInput">Judul Properti</label>
+              <input type="text" id="titleInput" required placeholder="Contoh: Rumah Minimalis 2 Lantai" />
+            </div>
+
+            <div class="search-field full-width">
+              <label for="locationInput">Lokasi</label>
+              <input type="text" id="locationInput" required placeholder="Contoh: Depok, Jawa Barat" />
+            </div>
+
+            <div class="search-field">
+              <label for="typeInput">Tipe Properti</label>
+              <select id="typeInput" required>
+                <option value="Rumah">Rumah</option>
+                <option value="Apartemen">Apartemen</option>
+                <option value="Ruko">Ruko</option>
+                <option value="Tanah">Tanah</option>
+              </select>
+            </div>
+
+            <div class="search-field">
+              <label for="statusInput">Status</label>
+              <select id="statusInput" required>
+                <option value="sale">Dijual</option>
+                <option value="rent">Disewa</option>
+              </select>
+            </div>
+
+            <div class="search-field">
+              <label for="priceInput">Harga (Rp)</label>
+              <input type="number" id="priceInput" min="0" required placeholder="850000000" />
+            </div>
+
+            <div class="search-field">
+              <label for="areaInput">Luas Tanah/Bangunan (m²)</label>
+              <input type="number" id="areaInput" min="0" required placeholder="90" />
+            </div>
+
+            <div class="search-field">
+              <label for="bedsInput">Kamar Tidur</label>
+              <input type="number" id="bedsInput" min="0" value="0" />
+            </div>
+
+            <div class="search-field">
+              <label for="bathsInput">Kamar Mandi</label>
+              <input type="number" id="bathsInput" min="0" value="0" />
+            </div>
+
+            <div class="search-field full-width">
+              <label for="notesInput">Deskripsi Tambahan</label>
+              <textarea id="notesInput" rows="3" placeholder="Ceritakan keunggulan properti Anda..."></textarea>
+            </div>
+
+            <div class="search-field">
+              <label for="nameInput">Nama Anda</label>
+              <input type="text" id="nameInput" required placeholder="Nama pemilik/kontak" />
+            </div>
+
+            <div class="search-field">
+              <label for="emailInput">Email</label>
+              <input type="email" id="emailInput" required placeholder="nama@email.com" />
+            </div>
+
+            <div class="search-field full-width">
+              <label for="phoneInput">Nomor Telepon</label>
+              <input type="tel" id="phoneInput" placeholder="08xxxxxxxxxx" />
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn">Kirim Pengajuan</button>
+
+            <p class="form-status" id="formStatus" role="status"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-bottom">
+        <p>&copy; 2026 PerumahanKu. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="nav.js"></script>
+    <script src="submit-listing.js"></script>
+  </body>
+</html>

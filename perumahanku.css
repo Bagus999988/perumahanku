@@ -492,6 +492,16 @@ h1, h2, h3, h4 {
   gap: 6px;
 }
 
+.property-notes {
+  color: var(--color-text-light);
+  font-size: 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .property-features {
   display: flex;
   gap: 16px;

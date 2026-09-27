@@ -18,9 +18,13 @@ create table if not exists public.listings (
   beds int not null default 0,
   baths int not null default 0,
   area numeric not null,
+  notes text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Safe to re-run: adds the column if this table already existed without it.
+alter table public.listings add column if not exists notes text;
 
 create table if not exists public.listing_photos (
   id uuid primary key default gen_random_uuid(),

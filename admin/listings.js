@@ -1,5 +1,5 @@
-// Admin listing manager: pick a listing on the left, manage its up-to-4
-// photos on the right (upload into Supabase Storage, row into listing_photos).
+// Admin listing manager: pick a listing on the left, edit its details and
+// manage its up-to-4 photos on the right, or delete it entirely.
 (function () {
   "use strict";
 
@@ -16,6 +16,16 @@
   let listings = [];
   let activeListingId = null;
 
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    }[ch]));
+  }
+
   function publicUrlToStoragePath(url) {
     const marker = "/storage/v1/object/public/listing-photos/";
     const idx = url.indexOf(marker);
@@ -25,11 +35,13 @@
   async function fetchListings() {
     const { data, error } = await sb
       .from("listings")
-      .select("id, title, location, price, listing_photos(id, photo_url, sort_order)")
+      .select(
+        "id, title, location, type, status, price, beds, baths, area, notes, listing_photos(id, photo_url, sort_order)"
+      )
       .order("created_at", { ascending: false });
 
     if (error) {
-      listingListEl.innerHTML = `<p class="admin-empty">Gagal memuat listing: ${error.message}</p>`;
+      listingListEl.innerHTML = `<p class="admin-empty">Gagal memuat listing: ${escapeHtml(error.message)}</p>`;
       return [];
     }
     return data || [];
@@ -47,8 +59,8 @@
         const isActive = listing.id === activeListingId;
         return `
           <div class="admin-listing-item ${isActive ? "active" : ""}" data-id="${listing.id}">
-            <h4>${listing.title}</h4>
-            <p>${listing.location} &middot; ${currencyFormatter.format(listing.price)}</p>
+            <h4>${escapeHtml(listing.title)}</h4>
+            <p>${escapeHtml(listing.location)} &middot; ${currencyFormatter.format(listing.price)}</p>
             <span class="photo-count">${count}/4 foto</span>
           </div>
         `;
@@ -59,15 +71,30 @@
       el.addEventListener("click", () => {
         activeListingId = el.dataset.id;
         renderList();
-        renderPhotoPanel();
+        renderDetailPanel();
       });
     });
   }
 
-  function renderPhotoPanel() {
+  function typeOptions(selected) {
+    return ["Rumah", "Apartemen", "Ruko", "Tanah"]
+      .map((t) => `<option value="${t}" ${t === selected ? "selected" : ""}>${t}</option>`)
+      .join("");
+  }
+
+  function statusOptions(selected) {
+    return [
+      { value: "sale", label: "Dijual" },
+      { value: "rent", label: "Disewa" },
+    ]
+      .map((s) => `<option value="${s.value}" ${s.value === selected ? "selected" : ""}>${s.label}</option>`)
+      .join("");
+  }
+
+  function renderDetailPanel() {
     const listing = listings.find((item) => item.id === activeListingId);
     if (!listing) {
-      photoPanelEl.innerHTML = `<p class="admin-empty-hint">Pilih listing di sebelah kiri untuk mengelola fotonya.</p>`;
+      photoPanelEl.innerHTML = `<p class="admin-empty-hint">Pilih listing di sebelah kiri untuk mengelola datanya.</p>`;
       return;
     }
 
@@ -82,7 +109,7 @@
         if (photo) {
           return `
             <div class="photo-slot filled" data-slot="${slot}">
-              <img src="${photo.photo_url}" alt="Foto ${slot} - ${listing.title}" />
+              <img src="${photo.photo_url}" alt="Foto ${slot} - ${escapeHtml(listing.title)}" />
               <button
                 type="button"
                 class="slot-remove"
@@ -105,10 +132,58 @@
       .join("");
 
     photoPanelEl.innerHTML = `
-      <h3>${listing.title}</h3>
+      <form id="editListingForm" class="admin-edit-form">
+        <div class="admin-field">
+          <label for="editTitle">Judul</label>
+          <input type="text" id="editTitle" value="${escapeHtml(listing.title)}" required />
+        </div>
+        <div class="admin-field">
+          <label for="editLocation">Lokasi</label>
+          <input type="text" id="editLocation" value="${escapeHtml(listing.location)}" required />
+        </div>
+        <div class="admin-field">
+          <label for="editType">Tipe</label>
+          <select id="editType">${typeOptions(listing.type)}</select>
+        </div>
+        <div class="admin-field">
+          <label for="editStatus">Status</label>
+          <select id="editStatus">${statusOptions(listing.status)}</select>
+        </div>
+        <div class="admin-field">
+          <label for="editPrice">Harga (Rp)</label>
+          <input type="number" id="editPrice" min="0" value="${listing.price}" required />
+        </div>
+        <div class="admin-field">
+          <label for="editArea">Luas (m²)</label>
+          <input type="number" id="editArea" min="0" value="${listing.area}" required />
+        </div>
+        <div class="admin-field">
+          <label for="editBeds">Kamar Tidur</label>
+          <input type="number" id="editBeds" min="0" value="${listing.beds}" />
+        </div>
+        <div class="admin-field">
+          <label for="editBaths">Kamar Mandi</label>
+          <input type="number" id="editBaths" min="0" value="${listing.baths}" />
+        </div>
+        <div class="admin-field full-width">
+          <label for="editNotes">Catatan / Deskripsi (tampil di halaman depan)</label>
+          <textarea id="editNotes" rows="3">${escapeHtml(listing.notes || "")}</textarea>
+        </div>
+
+        <div class="admin-edit-actions full-width">
+          <button type="submit" class="btn btn-primary" id="saveListingBtn">Simpan Perubahan</button>
+          <button type="button" class="btn btn-danger" id="deleteListingBtn">Hapus Listing</button>
+          <span class="admin-form-status" id="editStatusMsg"></span>
+        </div>
+      </form>
+
+      <h3 class="admin-photo-heading">Foto Listing</h3>
       <p class="admin-empty-hint">Maksimal 4 foto. Foto slot 1 dipakai sebagai foto utama di halaman depan.</p>
       <div class="photo-grid">${slots}</div>
     `;
+
+    document.getElementById("editListingForm").addEventListener("submit", saveListing);
+    document.getElementById("deleteListingBtn").addEventListener("click", deleteListing);
 
     photoPanelEl.querySelectorAll(".slot-remove").forEach((btn) => {
       btn.addEventListener("click", () => removePhoto(btn.dataset.photoId, btn.dataset.photoUrl));
@@ -120,6 +195,69 @@
         if (file) uploadPhoto(file, Number(input.dataset.slot));
       });
     });
+  }
+
+  async function saveListing(event) {
+    event.preventDefault();
+    const saveBtn = document.getElementById("saveListingBtn");
+    const statusMsg = document.getElementById("editStatusMsg");
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Menyimpan...";
+    statusMsg.textContent = "";
+    statusMsg.classList.remove("error");
+
+    const updates = {
+      title: document.getElementById("editTitle").value.trim(),
+      location: document.getElementById("editLocation").value.trim(),
+      type: document.getElementById("editType").value,
+      status: document.getElementById("editStatus").value,
+      price: Number(document.getElementById("editPrice").value),
+      area: Number(document.getElementById("editArea").value),
+      beds: Number(document.getElementById("editBeds").value) || 0,
+      baths: Number(document.getElementById("editBaths").value) || 0,
+      notes: document.getElementById("editNotes").value.trim() || null,
+    };
+
+    const { error } = await sb.from("listings").update(updates).eq("id", activeListingId);
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Simpan Perubahan";
+
+    if (error) {
+      statusMsg.textContent = "Gagal menyimpan: " + error.message;
+      statusMsg.classList.add("error");
+      return;
+    }
+
+    statusMsg.textContent = "Tersimpan.";
+    await refresh();
+  }
+
+  async function deleteListing() {
+    const listing = listings.find((item) => item.id === activeListingId);
+    if (!listing) return;
+
+    if (!confirm(`Hapus listing "${listing.title}"? Semua foto listing ini juga akan dihapus. Tindakan ini tidak bisa dibatalkan.`)) {
+      return;
+    }
+
+    const paths = (listing.listing_photos || [])
+      .map((photo) => publicUrlToStoragePath(photo.photo_url))
+      .filter(Boolean);
+
+    if (paths.length > 0) {
+      await sb.storage.from("listing-photos").remove(paths);
+    }
+
+    const { error } = await sb.from("listings").delete().eq("id", activeListingId);
+    if (error) {
+      alert("Gagal menghapus listing: " + error.message);
+      return;
+    }
+
+    activeListingId = null;
+    await refresh();
   }
 
   async function uploadPhoto(file, slot) {
@@ -138,7 +276,7 @@
 
     if (uploadError) {
       alert("Gagal mengunggah foto: " + uploadError.message);
-      renderPhotoPanel();
+      renderDetailPanel();
       return;
     }
 
@@ -174,7 +312,7 @@
   async function refresh() {
     listings = await fetchListings();
     renderList();
-    renderPhotoPanel();
+    renderDetailPanel();
   }
 
   window.requireAdmin().then((session) => {

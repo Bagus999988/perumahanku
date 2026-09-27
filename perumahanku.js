@@ -35,7 +35,7 @@
     const { data, error } = await sb
       .from("listings")
       .select(
-        "id, title, location, type, status, price, beds, baths, area, created_at, listing_photos(photo_url, sort_order)"
+        "id, title, location, type, status, price, beds, baths, area, notes, created_at, listing_photos(photo_url, sort_order)"
       )
       .order("created_at", { ascending: false });
 
@@ -56,6 +56,7 @@
         beds: row.beds,
         baths: row.baths,
         area: Number(row.area),
+        notes: row.notes,
         image: photos[0] ? photos[0].photo_url : `${FALLBACK_IMAGE_SEED}${row.id}/600/450`,
         createdAt: row.created_at,
       };
@@ -81,6 +82,16 @@
     return property.status === "rent" ? `${formatted} / bulan` : formatted;
   }
 
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    }[ch]));
+  }
+
   function createCard(property) {
     const badgeLabel = property.status === "rent" ? "Disewa" : "Dijual";
     const badgeClass = property.status === "rent" ? "property-badge rent" : "property-badge";
@@ -93,14 +104,15 @@
     return `
       <article class="property-card" data-id="${property.id}">
         <div class="property-media">
-          <img src="${property.image}" alt="${property.title}" loading="lazy" />
+          <img src="${property.image}" alt="${escapeHtml(property.title)}" loading="lazy" />
           <span class="${badgeClass}">${badgeLabel}</span>
           <span class="property-price-tag">${formatPrice(property)}</span>
         </div>
         <div class="property-body">
-          <span class="property-type">${property.type}</span>
-          <h3 class="property-title">${property.title}</h3>
-          <p class="property-location">📍 ${property.location}</p>
+          <span class="property-type">${escapeHtml(property.type)}</span>
+          <h3 class="property-title">${escapeHtml(property.title)}</h3>
+          <p class="property-location">📍 ${escapeHtml(property.location)}</p>
+          ${property.notes ? `<p class="property-notes">${escapeHtml(property.notes)}</p>` : ""}
           <div class="property-features">${featureBits.join("")}</div>
           <a href="#" class="property-cta" data-id="${property.id}">Lihat Detail</a>
         </div>

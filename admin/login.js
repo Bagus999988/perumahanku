@@ -36,7 +36,10 @@
     const { error: signInError } = await sb.auth.signInWithPassword({ email, password });
 
     if (signInError) {
-      setError("Email atau password salah.");
+      // Show Supabase's real reason (e.g. "Invalid login credentials" vs
+      // "Email not confirmed") instead of a generic message, so it's
+      // actually possible to diagnose a failed login.
+      setError(`Gagal masuk: ${signInError.message}`);
       submitBtn.disabled = false;
       submitBtn.textContent = "Masuk";
       return;
